@@ -1,0 +1,19 @@
+{
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "Name",
+      "AttributeType": "S"
+    }
+  ],
+  "ProvisionedThroughput": {
+    "WriteCapacityUnits": 5,
+    "ReadCapacityUnits": 5
+  },
+  "TableName": "LyangTable",
+  "KeySchema": [
+    {
+      "AttributeName": "Name",
+      "KeyType": "HASH"
+    }
+  ]
+}

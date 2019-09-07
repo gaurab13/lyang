@@ -1,11 +1,16 @@
 packages:
   # List of package names (e.g granitic.ws) referenced by components in this file.
   - github.com/graniticio/granitic/v2/ws/handler
+  - lyang/db
   - lyang/endpoint/user
 components:
   # Definition of components you want to be managed by Granitic
+  userDbManager:
+    type: db.UserDbManger
+  
   addUserLogic:
     type: user.AddUserLogic
+    DBManager: ref:userDbManager
   
   addUserHandler:
     type: handler.WsHandler
