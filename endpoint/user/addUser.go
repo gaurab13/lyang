@@ -12,7 +12,6 @@ import (
 
 type UserCreator interface {
 	AddUser(model.User) error
-	Test()
 }
 
 type AddUserLogic struct {
@@ -31,8 +30,7 @@ func (ul *AddUserLogic) ProcessPayload(ctx context.Context, req *ws.Request, res
 	person["name"] = cb.Name
 	person["age"] = cb.Age
 	person["gender"] = cb.Gender
-	fmt.Println("here in logic")
-	ul.DBManager.Test()
+
 	u := model.User{
 		Name: cb.Name,
 		Age: cb.Age,
@@ -40,10 +38,10 @@ func (ul *AddUserLogic) ProcessPayload(ctx context.Context, req *ws.Request, res
 	}
 
 	err := ul.DBManager.AddUser(u)
-	ul.DBManager.AddUser(u)
 
 	if(err != nil) {
-		ul.Log.LogErrorf("Could not create worker, Error: %v", err)
+		fmt.Println("Error while writing to db")
+		fmt.Println(err.Error())
 		res.HTTPStatus = 500
 		return
 	}

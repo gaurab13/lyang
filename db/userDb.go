@@ -21,41 +21,27 @@ type UserDbManger struct {
 }
 
 func (dm UserDbManger) Session() *dynamodb.DynamoDB {
-	fmt.Println("ho")
-	config := &aws.Config{
-		Region:   aws.String("us-west-1"),
-		Endpoint: aws.String("http://localhost:8000"),
-	}
-
-	sess := session.Must(session.NewSession(config))
-	svc := dynamodb.New(sess)
-
-	return svc
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+	dbSvc := dynamodb.New(sess, &aws.Config{Endpoint: aws.String("http://127.0.0.1:8000")})
+	return dbSvc
 }
 
 func (dm UserDbManger) AddUser(w User) error {
-	tbName := aws.String("LyangTable")
 	dc := dm.Session()
-	fmt.Println(*dc)
-	fmt.Println("h000o")
-	item, err := dynamodbattribute.MarshalMap(w)
-	fmt.Println(item)
-	if err != nil {
-		return err
+	item, error := dynamodbattribute.MarshalMap(w)
+	if error != nil {
+		fmt.Println("error in marshal")
+		return error
 	}
+
 	input := &dynamodb.PutItemInput{
 		Item:      item,
-		TableName: tbName,
+		TableName: aws.String("my_table"),
 	}
 	fmt.Println(input)
 
-	_, err = dc.PutItem(input)
-	if err != nil {
-		fmt.Println("errorrrrrrrrrrr")
-	}
-	return err
-}
-
-func (dm UserDbManger) Test() {
-	fmt.Println("inside db")
+	_, error1 := dc.PutItem(input)
+	return error1
 }
