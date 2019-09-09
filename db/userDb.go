@@ -28,9 +28,9 @@ func (dm UserDbManger) Session() *dynamodb.DynamoDB {
 	return dbSvc
 }
 
-func (dm UserDbManger) AddUser(w User) error {
+func (dm UserDbManger) AddUser(u User) error {
 	dc := dm.Session()
-	item, error := dynamodbattribute.MarshalMap(w)
+	item, error := dynamodbattribute.MarshalMap(u)
 	if error != nil {
 		fmt.Println("error in marshal")
 		return error
@@ -41,7 +41,55 @@ func (dm UserDbManger) AddUser(w User) error {
 		TableName: aws.String("my_table"),
 	}
 	fmt.Println(input)
+	_, err := dc.PutItem(input)
+	return err
+}
 
-	_, error1 := dc.PutItem(input)
-	return error1
+func (dm UserDbManger) ListUser() ([]User, error) {
+	dc := dm.Session()
+	input := &dynamodb.ScanInput{
+		TableName: aws.String("my_table"),
+	}
+	result, err := dc.Scan(input)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	u := []User{}
+	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, &u)
+	return u, err
+}
+
+func (dm UserDbManger) UpdateUser(u User) error {
+	dc := dm.Session()
+	// item, error := dynamodbattribute.MarshalMap(u)
+
+	type UpdateInfo struct {
+		Age    int    `json:":age"`
+		Gender string `json:":gender"`
+	}
+	up, err := dynamodbattribute.MarshalMap(UpdateInfo{
+		Age:    u.Age,
+		Gender: u.Gender,
+	})
+
+	if err != nil {
+		fmt.Println("Something went wrong")
+	}
+
+	input := &dynamodb.UpdateItemInput{
+		Key: map[string]*dynamodb.AttributeValue{
+			"name": {S: aws.String(u.Name)},
+		},
+		TableName:                 aws.String("my_table"),
+		UpdateExpression:          aws.String("set age = :age, gender = :gender"),
+		ExpressionAttributeValues: up,
+		ReturnValues:              aws.String("NONE"),
+	}
+
+	_, err1 := dc.UpdateItem(input)
+	if err1 != nil {
+		fmt.Println(err1.Error())
+	}
+	return err1
 }

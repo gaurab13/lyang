@@ -11,9 +11,29 @@ components:
   addUserLogic:
     type: user.AddUserLogic
     DBManager: ref:userDbManager
+
+  listUsersLogic:
+    type: user.ListUsersLogic
+    DBManager: ref:userDbManager
+  
+  updateUserLogic:
+    type: user.UpdateUserLogic
+    DBManager: ref:userDbManager
   
   addUserHandler:
     type: handler.WsHandler
     HTTPMethod: POST
     Logic: ref:addUserLogic
+    PathPattern: "^/user"
+  
+  listUsersHandler:
+    type: handler.WsHandler
+    HTTPMethod: GET
+    Logic: ref:listUsersLogic
+    PathPattern: "^/users"
+
+  updateUserHandler:
+    type: handler.WsHandler
+    HTTPMethod: PUT
+    Logic: ref:updateUserLogic
     PathPattern: "^/user"
