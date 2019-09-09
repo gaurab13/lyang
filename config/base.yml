@@ -3,7 +3,7 @@ Facilities:
   HTTPServer: true
   JSONWs: true
   #RuntimeCtl: true
-  #ServiceErrorManager: true
+  ServiceErrorManager: true
 HTTPServer:
   Address: 0.0.0.0
   Port: 8080
@@ -12,3 +12,11 @@ HTTPServer:
     LogLinePreset: "framework"
 ApplicationLogger:
   GlobalLogLevel: INFO
+
+createUserRules:
+  - ["Name", "STR:INVALID_NAME", "REQ:INVALID_NAME", "HARDTRIM", "LEN:1-100"]
+  - ["Gender", "STR:INVALID_GENDER", "REQ:INVALID_GENDER", "HARDTRIM", "LEN:2-100"]
+
+serviceErrors:
+  - ["C", "INVALID_NAME", "Name is a required field and should be a string"]
+  - ["C", "INVALID_GENDER", "Gender is a required field and should be a string"]

@@ -40,7 +40,6 @@ func (dm UserDbManger) AddUser(u User) error {
 		Item:      item,
 		TableName: aws.String("my_table"),
 	}
-	fmt.Println(input)
 	_, err := dc.PutItem(input)
 	return err
 }

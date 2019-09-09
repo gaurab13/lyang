@@ -1,6 +1,7 @@
 packages:
   # List of package names (e.g granitic.ws) referenced by components in this file.
   - github.com/graniticio/granitic/v2/ws/handler
+  - github.com/graniticio/granitic/v2/validate
   - lyang/db
   - lyang/endpoint/user
 components:
@@ -20,11 +21,16 @@ components:
     type: user.UpdateUserLogic
     DBManager: ref:userDbManager
   
+  addUserValidator:
+    type: validate.RuleValidator
+    Rules: conf:createUserRules
+
   addUserHandler:
     type: handler.WsHandler
     HTTPMethod: POST
     Logic: ref:addUserLogic
     PathPattern: "^/user"
+    AutoValidator: ref:addUserValidator
   
   listUsersHandler:
     type: handler.WsHandler
